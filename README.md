@@ -14,7 +14,7 @@
 # Installation
 
 ```bash
-  git clone https://github.com/stoneflux7/Ubuntu-Server
+  git clone https://github.com/stoneflux7/Ubuntu-Server.git
 ```
 
 ```bash
