@@ -25,5 +25,4 @@ Password **stoneflux**
 ## Authors
 
 - [@stoneflux7](https://www.github.com/stoneflux7)
-```
 
