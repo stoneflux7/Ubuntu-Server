@@ -7,3 +7,7 @@
 
 # Installation
 
+```bash
+  git clone https://link-to-project
+```
+
