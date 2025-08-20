@@ -3,7 +3,7 @@
 **Clone The Repository**
 
 ```bash
-git clone https://github.com/stoneflux7/Ubuntu-Server.git
+git clone https://github.com/stoneflux7/Ubuntu-Server.git && cd Ubuntu-Server
 ```
 
 **Build & Run**
