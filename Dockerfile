@@ -3,7 +3,9 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install base tools + KasmVNC dependencies
+# -----------------------------
+# Install base tools
+# -----------------------------
 RUN apt-get update && apt-get install -y \
     sudo \
     wget \
@@ -13,35 +15,46 @@ RUN apt-get update && apt-get install -y \
     vim \
     passwd \
     net-tools \
-    lxde \
-    supervisor \
-    openssh-client \
+    iproute2 \
     python3 \
     python3-pip \
+    supervisor \
+    gnupg2 \
+    ca-certificates \
+    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Create root password = stoneflux
+# -----------------------------
+# Install Docker (inside container)
+# -----------------------------
+RUN curl -fsSL https://get.docker.com | sh \
+    && usermod -aG docker root
+
+# -----------------------------
+# Users
+# -----------------------------
+# Root password
 RUN echo "root:stoneflux" | chpasswd
 
-# Set hostname
+# Create extra user "stoneflux"
+RUN useradd -m -s /bin/bash stoneflux && echo "stoneflux:stoneflux" | chpasswd && adduser stoneflux sudo
+
+# -----------------------------
+# Hostname & Prompt
+# -----------------------------
 RUN echo "stoneflux" > /etc/hostname
-
-# Clone your GitHub repo (replace with your repo URL)
-RUN git clone https://github.com/stoneflux/your-repository.git /opt/app
-
-# Install KasmVNC (headless desktop over port 6080)
-RUN wget https://github.com/kasmtech/KasmVNC/releases/download/v1.2.0/kasmvncserver_1.2.0_amd64.deb \
-    && apt-get update && apt-get install -y ./kasmvncserver_1.2.0_amd64.deb \
-    && rm kasmvncserver_1.2.0_amd64.deb
-
-# Fix bash prompt to root@stoneflux:#
 RUN echo 'PS1="root@stoneflux:# "' >> /root/.bashrc
 
-# Expose KasmVNC web port
-EXPOSE 6080
+# -----------------------------
+# Supervisor config (auto-start bash)
+# -----------------------------
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set working dir to repo
-WORKDIR /opt/app
+# -----------------------------
+# Expose port (9000, optional for web terminals)
+# -----------------------------
+EXPOSE 9000
 
-# Start KasmVNC when container runs
-CMD ["/usr/bin/kasmvncserver", "--vnc", ":1", "--listen", "0.0.0.0", "--http-port", "6080"]
+# Default CMD
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
