@@ -3,7 +3,7 @@
 ****
 
 ```bash
-git clone https://github.com/stoneflux7/Ubuntu-Server.git && docker build -t stoneflux . && docker run -it --name stoneflux-container stoneflux && docker run -it -p 9000:9000 --name stoneflux-container stoneflux
+git clone https://github.com/stoneflux7/Ubuntu-Server.git && cd Ubuntu-Server && docker build -t stoneflux . && docker run -it --name stoneflux-container stoneflux && docker run -it -p 9000:9000 --name stoneflux-container stoneflux
 ```
 
 # Start And Stop And Restart
